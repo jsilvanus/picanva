@@ -1,5 +1,5 @@
 // HTTP client for piprogram, the service that owns slide display.
-// The paths are the PiPGM routes of the pimatrix API that piprogram inherits (see docs/handoff.md).
+// Paths and bodies follow piprogram's openapi/openapi.yaml (createMediaItem, controlPipeline, setFadeToBlack, setPipelineAudio).
 
 export class PiprogramError extends Error {
   constructor(status, message) {
@@ -13,7 +13,8 @@ export function createPiprogramClient({ baseUrl, apiKey, timeoutMs, fetchImpl = 
   async function request(method, path, body) {
     const headers = { accept: "application/json" };
     if (body !== undefined) headers["content-type"] = "application/json";
-    if (apiKey) headers.authorization = `Bearer ${apiKey}`;
+    // piprogram's OpenAPI declares the x-api-key scheme.
+    if (apiKey) headers["x-api-key"] = apiKey;
     let response;
     try {
       response = await fetchImpl(`${baseUrl}${path}`, {

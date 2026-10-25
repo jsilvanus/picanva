@@ -12,10 +12,11 @@ picanva never shows slides. It turns Canva pages into media items in piprogram a
 ## What is not supported yet
 
 - **Embed mode** (a live Canva iframe on the slide output) needs a Canva item kind in piprogram. That is piprogram 1.1. Until then picanva refuses pushes without exported pages.
+- **Size:** media goes out base64 in a JSON body, and piprogram takes 50 MB bodies, so a page is capped at 37 MB raw.
 - **Records** are in memory. After a restart picanva forgets which piprogram items belong to which design. piprogram keeps the media.
 
 ## Unverified
 
 - The Canva Connect export paths (`POST /v1/exports`, `GET /v1/exports/{id}`) and their response shapes follow the pimatrix adapter. Not checked against the live Canva API.
-- The piprogram routes above are the PiPGM routes of the pimatrix OpenAPI (`openapi/openapi.yaml` in pimatrix). piprogram has no published spec yet; check them against piprogram once its OpenAPI exists.
+- Checked against piprogram's `openapi/openapi.yaml` (createMediaItem, controlPipeline, setFadeToBlack, setPipelineAudio). The client is hand-written: piprogram's generated client is not published, so picanva does not depend on it.
 - The Canva app plugin lives in Canva's developer portal, not in this repo. Its calls must move from `/api/v1/pipgm/canva/*` to `/api/v1/canva/*`.

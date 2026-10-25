@@ -1,6 +1,7 @@
 // Configuration from environment variables. Every PICANVA_* name is documented in deploy/pi/picanva.env.example.
 
-const MAX_ASSET_BYTES_LIMIT = 200 * 1024 * 1024;
+// piprogram takes JSON bodies up to 50 MB and media is sent base64 (x4/3), so raw assets stay under 37 MB.
+const MAX_ASSET_BYTES_LIMIT = 37 * 1024 * 1024;
 
 function list(value) {
   return value ? value.split(",").map((s) => s.trim()).filter(Boolean) : [];
@@ -54,7 +55,7 @@ export function loadConfig(env = process.env) {
     piprogramTimeoutMs: integer(env.PICANVA_PIPROGRAM_TIMEOUT_MS, 15000, "PICANVA_PIPROGRAM_TIMEOUT_MS", 500, 120000),
     // Hosts that exported assets may be downloaded from (suffix match, https only).
     assetHosts: list(env.PICANVA_ASSET_HOSTS ?? "canva.com,canva-usercontent.com"),
-    maxAssetBytes: integer(env.PICANVA_MAX_ASSET_BYTES, 40 * 1024 * 1024, "PICANVA_MAX_ASSET_BYTES", 1, MAX_ASSET_BYTES_LIMIT),
+    maxAssetBytes: integer(env.PICANVA_MAX_ASSET_BYTES, 30 * 1024 * 1024, "PICANVA_MAX_ASSET_BYTES", 1, MAX_ASSET_BYTES_LIMIT),
     // Canva Connect API for server-side export. Without a token, only pushes with explicit exportUrls work.
     canvaApiBaseUrl: httpUrl(env.CANVA_API_BASE_URL, "CANVA_API_BASE_URL") ?? "https://api.canva.com/rest",
     canvaAccessToken: env.CANVA_ACCESS_TOKEN?.trim() || undefined,

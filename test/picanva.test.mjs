@@ -202,3 +202,20 @@ test("health reports mode and piprogram target", async () => {
   assert.equal(res.json().status, "ok");
   assert.equal(res.json().piprogram, PIPROGRAM);
 });
+
+test("piprogram calls send the x-api-key header the piprogram spec declares", async () => {
+  const seen = [];
+  const fetchImpl = async (url, init = {}) => {
+    seen.push(init.headers);
+    return json({ id: "pg-1" });
+  };
+  const client = createPiprogramClient({ baseUrl: PIPROGRAM, apiKey: "pg-key", timeoutMs: 1000, fetchImpl });
+  await client.createMediaItem({ kind: "image", filename: "a.png", dataBase64: "AA==" });
+  assert.equal(seen[0]["x-api-key"], "pg-key");
+  assert.equal(seen[0].authorization, undefined);
+});
+
+test("asset size is capped so base64 bodies stay under piprogram's 50 MB limit", () => {
+  assert.throws(() => loadConfig({ PICANVA_PIPROGRAM_URL: PIPROGRAM, PICANVA_MAX_ASSET_BYTES: String(40 * 1024 * 1024) }), /PICANVA_MAX_ASSET_BYTES/);
+  assert.equal(loadConfig({ PICANVA_PIPROGRAM_URL: PIPROGRAM }).maxAssetBytes, 30 * 1024 * 1024);
+});

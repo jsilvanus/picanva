@@ -1,0 +1,21 @@
+{
+  "name": "picanva",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Canva slide bridge: turns Canva designs into PiPGM items for piprogram",
+  "type": "module",
+  "engines": {
+    "node": ">=24"
+  },
+  "bin": {
+    "picanva": "./cli/picanva.mjs"
+  },
+  "scripts": {
+    "start": "node src/main.mjs",
+    "test": "node --test test/*.test.mjs",
+    "check": "node --check src/main.mjs && node --check cli/picanva.mjs"
+  },
+  "dependencies": {
+    "fastify": "^5.2.0"
+  }
+}

@@ -120,7 +120,9 @@ paths:
   /api/v1/canva/control:
     post:
       summary: Step 3 - Live Presentation Slide & Output Control
-      description: Advances or cues slides and toggles Fade to Black (FTB) on Pi Program.
+      description: >-
+        Advances or cues slides, toggles Fade to Black (FTB) on Pi Program,
+        and controls projector beam hardware blanking (picMute).
       operationId: controlCanvaPresentation
       requestBody:
         required: true
@@ -128,7 +130,7 @@ paths:
           application/json:
             schema:
               type: object
-              required: [pipelineId, action]
+              required: [action]
               properties:
                 pipelineId:
                   type: string
@@ -136,7 +138,7 @@ paths:
                   example: pipgm1
                 action:
                   type: string
-                  enum: [next, prev, gotoPage, ftb]
+                  enum: [next, prev, gotoPage, ftb, picMute]
                   example: next
                 page:
                   type: integer
@@ -146,6 +148,10 @@ paths:
                   type: boolean
                   description: Required when action is ftb
                   example: true
+                muted:
+                  type: boolean
+                  description: Required when action is picMute (true to blank beam, false to open beam)
+                  example: false
       responses:
         "200":
           description: Control action executed
@@ -157,33 +163,6 @@ paths:
                   success: { type: boolean, example: true }
                   currentPage: { type: integer, example: 2 }
                   ftb: { type: boolean, example: false }
-
-  /api/v1/canva/projector/pic-mute:
-    post:
-      summary: Step 3 - Projector Picture Mute Hardware Control
-      description: Controls the physical hardware beam shutter (Pic Mute) of church projectors.
-      operationId: setProjectorPicMute
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              required: [muted]
-              properties:
-                muted:
-                  type: boolean
-                  description: true to blank projector beams, false to open beams
-                  example: false
-      responses:
-        "200":
-          description: Projector shutter command sent
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  success: { type: boolean, example: true }
                   muted: { type: boolean, example: false }
 
   /api/v1/canva/status:

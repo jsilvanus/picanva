@@ -47,17 +47,12 @@ beforeEach(() => {
     if (path === "/api/v1/canva/control") {
       let currentPage = 1;
       let ftb = false;
+      let muted = undefined;
       if (body.action === "gotoPage") currentPage = body.page;
       if (body.action === "ftb") ftb = body.enabled;
+      if (body.action === "picMute") muted = body.muted;
       return new Response(
-        JSON.stringify({ success: true, currentPage, ftb }),
-        { status: 200, headers: { "Content-Type": "application/json" } }
-      );
-    }
-
-    if (path === "/api/v1/canva/projector/pic-mute") {
-      return new Response(
-        JSON.stringify({ success: true, muted: body.muted }),
+        JSON.stringify({ success: true, currentPage, ftb, muted }),
         { status: 200, headers: { "Content-Type": "application/json" } }
       );
     }

@@ -55,9 +55,8 @@ Environment variables baked into the static bundle during `npm run build`:
 
 * **HTTPS Enforcement**: Canva runs inside an HTTPS iframe; Gateway must be accessible over HTTPS.
 * **CORS**: Pi Gateway restricts CORS on Canva routes to Canva domains (`https://*.canva-apps.com`).
-* **Scoped Endpoints**: Gateway only allows safe, pre-whitelisted presentation and routing presets:
+* **Scoped Endpoints**: Gateway only allows 4 safe, flat endpoints:
   * `/push`: Media upload to Pi Program.
   * `/setup`: Armed pipeline & preset matrix routes.
-  * `/control`: Slide navigation & FTB.
-  * `/projector/pic-mute`: Hardware projector beam blanking.
+  * `/control`: All live controls (`next`, `prev`, `gotoPage`, `ftb`, `picMute`).
   * `/status`: Presentation and health polling.

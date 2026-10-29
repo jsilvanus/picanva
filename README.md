@@ -107,10 +107,9 @@ Runs Node's native test runner against the client and API services with mock net
 Because Canva apps run in a sandboxed iframe on Canva domains:
 1. **Strict HTTPS**: Gateway URL must be HTTPS to prevent browser mixed-content blocking.
 2. **CORS Restrictions**: Pi Gateway restricts CORS on Canva routes to Canva origins (`https://*.canva-apps.com`, Canva developer origins).
-3. **Scoped Gateway Routes**: Pi Gateway only exposes:
+3. **Scoped Gateway Routes**: Pi Gateway only exposes 4 flat endpoints:
    * `POST /api/v1/canva/push`: Staged slide upload to Pi Program.
    * `POST /api/v1/canva/setup`: Pipeline arming & predefined Pi Matrix route presets.
-   * `POST /api/v1/canva/control`: Presentation commands (`next`, `prev`, `gotoPage`, `ftb`).
-   * `POST /api/v1/canva/projector/pic-mute`: Projector beam hardware blanking.
-   * `GET /api/v1/canva/status`: Pipeline and projector status.
+   * `POST /api/v1/canva/control`: All live controls (`next`, `prev`, `gotoPage`, `ftb`, `picMute`).
+   * `GET  /api/v1/canva/status`: Pipeline and projector status.
 4. See `openapi/openapi.yaml` for the complete API contract.

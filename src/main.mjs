@@ -234,7 +234,7 @@ async function handleTogglePicMute() {
   render();
 
   try {
-    await setProjectorPicMute({ muted: newMute });
+    await setProjectorPicMute({ muted: newMute, pipelineId: state.live.pipelineId });
     showToast(newMute ? "Projector Pic Mute ON (Beams Blanked)" : "Projector Pic Mute OFF (Beams Live)", newMute ? "info" : "success", 2500);
   } catch (err) {
     state.live.picMute = !newMute; // revert

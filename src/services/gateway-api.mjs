@@ -225,11 +225,12 @@ export async function toggleFtb({ pipelineId, enabled }) {
 /**
  * Step 3: Hardware Projector Pic Mute (shutter beam blanking via /canva/control).
  */
-export async function setProjectorPicMute({ muted }) {
+export async function setProjectorPicMute({ muted, pipelineId }) {
   try {
     return await apiRequest("/api/v1/canva/control", {
       method: "POST",
       body: JSON.stringify({
+        pipelineId,
         action: "picMute",
         muted,
       }),

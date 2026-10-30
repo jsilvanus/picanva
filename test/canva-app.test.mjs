@@ -9,6 +9,8 @@ import {
   toggleFtb,
   setProjectorPicMute,
   getGatewayStatus,
+  pushCanvaGraphic,
+  setCanvaGraphicOffAir,
   setFetchImpl,
   resetFetchImpl,
 } from "../src/services/gateway-api.mjs";
@@ -67,6 +69,33 @@ beforeEach(() => {
           totalSlides: 4,
           ftb: false,
           picMute: false,
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    if (path === "/api/v1/graphics/canva/push") {
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          title: body.title,
+          slot: body.slot || 7,
+          mediaPlayer: body.mediaPlayer || 1,
+          movement: body.movement || "fly-left",
+          keyer: body.keyer || "usk",
+          autoHideMs: body.autoHideMs,
+        }),
+        { status: 200, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    if (path === "/api/v1/graphics/canva/off-air") {
+      return new Response(
+        JSON.stringify({
+          ok: true,
+          offAir: true,
+          keyer: body.keyer || "usk",
+          index: body.index || 1,
         }),
         { status: 200, headers: { "Content-Type": "application/json" } }
       );
@@ -165,4 +194,27 @@ test("gateway-api getGatewayStatus returns status object", async () => {
   assert.strictEqual(status.matrixRoute, "both_projectors");
   assert.strictEqual(status.ftb, false);
   assert.strictEqual(status.picMute, false);
+});
+
+test("gateway-api executes pushCanvaGraphic with Flying Key and auto-hide", async () => {
+  const res = await pushCanvaGraphic({
+    title: "Test Lower Third",
+    imageUrl: "https://export.canva.dev/mock/page-1.png",
+    movement: "fly-left",
+    autoHideMs: 7000,
+    slot: 8,
+    keyer: "usk",
+  });
+  assert.strictEqual(res.ok, true);
+  assert.strictEqual(res.title, "Test Lower Third");
+  assert.strictEqual(res.movement, "fly-left");
+  assert.strictEqual(res.slot, 8);
+  assert.strictEqual(res.keyer, "usk");
+});
+
+test("gateway-api executes setCanvaGraphicOffAir", async () => {
+  const res = await setCanvaGraphicOffAir({ keyer: "usk", index: 1 });
+  assert.strictEqual(res.ok, true);
+  assert.strictEqual(res.offAir, true);
+  assert.strictEqual(res.keyer, "usk");
 });

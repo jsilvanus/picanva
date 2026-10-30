@@ -192,6 +192,96 @@ paths:
                   ftb: { type: boolean, example: false }
                   picMute: { type: boolean, example: false }
 
+  /api/v1/graphics/canva/push:
+    post:
+      summary: Broadcast Graphic Push with ATEM Flying Key
+      description: >-
+        Pushes a transparent Canva-exported still directly to ATEM Media Pool (slots 7..24)
+        via pigraphics and piswitch, triggering an automatic DVE Flying Key transition
+        (fly-in from left, right, bottom, or top) with optional auto-hide timer.
+      operationId: pushCanvaGraphic
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                  example: Pastor Juha - Lower Third
+                imageUrl:
+                  type: string
+                  format: uri
+                  example: https://export.canva.com/abc123xyz/page-1.png
+                image:
+                  type: string
+                  description: Optional base64 encoded PNG
+                movement:
+                  type: string
+                  enum: [fly-left, fly-right, fly-bottom, fly-top, zoom, dissolve, cut]
+                  default: fly-left
+                autoHideMs:
+                  type: integer
+                  default: 7000
+                  example: 7000
+                slot:
+                  type: integer
+                  default: 7
+                  example: 7
+                mediaPlayer:
+                  type: integer
+                  default: 1
+                  example: 1
+                keyer:
+                  type: string
+                  enum: [usk, dsk]
+                  default: usk
+      responses:
+        "200":
+          description: Graphic uploaded and flown on air
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean, example: true }
+                  title: { type: string, example: Pastor Juha - Lower Third }
+                  slot: { type: integer, example: 7 }
+                  mediaPlayer: { type: integer, example: 1 }
+                  movement: { type: string, example: fly-left }
+                  keyer: { type: string, example: usk }
+                  autoHideMs: { type: integer, example: 7000 }
+
+  /api/v1/graphics/canva/off-air:
+    post:
+      summary: Take Graphic Off Air
+      description: Reverses or dismisses the active ATEM graphic keyer.
+      operationId: offAirCanvaGraphic
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                keyer:
+                  type: string
+                  enum: [usk, dsk]
+                  default: usk
+                index:
+                  type: integer
+                  default: 1
+      responses:
+        "200":
+          description: Keyer taken off air
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok: { type: boolean, example: true }
+                  offAir: { type: boolean, example: true }
+
 components:
   securitySchemes:
     BearerAuth:

@@ -245,6 +245,67 @@ export async function setProjectorPicMute({ muted, pipelineId }) {
 }
 
 /**
+ * Push transparent graphic still to ATEM Media Pool with Flying Key.
+ */
+export async function pushCanvaGraphic({
+  title,
+  image,
+  imageUrl,
+  movement = "fly-left",
+  autoHideMs = 7000,
+  keyer = "usk",
+  slot = 7,
+}) {
+  try {
+    return await apiRequest("/api/v1/graphics/canva/push", {
+      method: "POST",
+      body: JSON.stringify({
+        title,
+        image,
+        imageUrl,
+        movement,
+        autoHideMs,
+        keyer,
+        slot,
+      }),
+    });
+  } catch (err) {
+    if (CONFIG.isDev) {
+      console.warn("[picanva] Gateway unreachable in dev mode - simulating graphics push:", err.message);
+      return {
+        ok: true,
+        isSimulated: true,
+        title: title || "Canva Graphic",
+        slot,
+        mediaPlayer: 1,
+        movement,
+        keyer,
+        autoHideMs,
+      };
+    }
+    throw err;
+  }
+}
+
+/**
+ * Takes active ATEM graphic keyer (USK or DSK) off air.
+ */
+export async function setCanvaGraphicOffAir({ keyer = "usk", index = 1 } = {}) {
+  try {
+    return await apiRequest("/api/v1/graphics/canva/off-air", {
+      method: "POST",
+      body: JSON.stringify({ keyer, index }),
+    });
+  } catch (err) {
+    if (CONFIG.isDev) {
+      console.warn("[picanva] Simulating graphic off-air:", err.message);
+      return { ok: true, isSimulated: true, offAir: true, keyer, index };
+    }
+    throw err;
+  }
+}
+
+/**
  * Health check & status polling.
  */
 export async function getGatewayStatus(pipelineId = "pipgm1") {
